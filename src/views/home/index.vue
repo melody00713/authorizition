@@ -56,8 +56,8 @@
           </el-form>
         </el-col>
         <el-col :span="4" style="text-align: right">
-          <el-button size="medium" type="primary" @click="showModalHandler('addForm')">申请授权</el-button>
-          <el-button size="medium" type="primary" @click="tableDownHandler">导出</el-button>
+          <el-button size="medium" type="primary" @click="showModalHandler('addForm')" v-if="!auditor">申请授权</el-button>
+          <el-button size="medium" type="primary" @click="tableDownHandler" v-if="auditor">导出</el-button>
         </el-col>
       </el-row>
       <el-table
@@ -111,33 +111,36 @@
               <el-form-item label="服务号">
                 <span>{{ props.row.serverNumber || '-' }}</span>
               </el-form-item>
-              <el-form-item label="授权激活码">
-                <span>{{ props.row.authorizationcode || '-' }}</span>
+              <el-form-item label="授权激活码" class="ellipsis-box">
+                <div @mouseenter="($event) => handleCellMouseEnter($event)" @mouseleave="tooltiphidden = true">
+                <el-tooltip ref="tootip" :disabled="tooltiphidden" class="item" effect="dark" content="下载查看全部" placement="top">
+                  <div class="ellipsis" ref="ellipsis">{{ props.row.authorizationcode || '-' }}</div>
+                </el-tooltip>
+                </div>
+                <!--<ellipseTooltip :row="props"/>-->
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column prop="contractNumber" label="合同编号" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="name" label="客户名称" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="contractNumber" label="合同编号" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
+        <el-table-column prop="name" label="客户名称" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
         <el-table-column filter-placement="bottom" column-key="productLine" prop="productLine" label="产品线"
                          show-overflow-tooltip :filters="filter.product_line"
-                         :filter-multiple="false"></el-table-column>
+                         :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>
         <el-table-column filter-placement="bottom" column-key="product" prop="product" label="产品名称"
-                         show-overflow-tooltip :filters="filter.product" :filter-multiple="false"></el-table-column>
+                         show-overflow-tooltip :filters="filter.product" :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>
         <el-table-column filter-placement="bottom" column-key="productSeries" prop="productSeries" label="产品系列"
                          show-overflow-tooltip :filters="filter.product_series"
-                         :filter-multiple="false"></el-table-column>
+                         :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>
         <el-table-column filter-placement="bottom" column-key="version" prop="version" label="产品版本"
                          show-overflow-tooltip :filters="filter.product_version"
-                         :filter-multiple="false"></el-table-column>
+                         :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>
         <el-table-column filter-placement="bottom" column-key="productModule" prop="productModule" label="产品组件"
                          show-overflow-tooltip :filters="filter.product_model"
-                         :filter-multiple="false"></el-table-column>
-        <el-table-column prop="superveneNumber" label="数量" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="license" label="许可" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="date" label="授权日期" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.date || '-'}}</template>
-        </el-table-column>
+                         :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>
+        <el-table-column prop="superveneNumber" label="数量" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
+        <el-table-column prop="license" label="许可" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
+        <el-table-column prop="date" label="授权日期" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
         <el-table-column filter-placement="bottom" column-key="status" prop="status" label="状态" show-overflow-tooltip
                          :filters="filter.audit_status" :filter-multiple="false"></el-table-column>
         <el-table-column
@@ -218,7 +221,8 @@
           all: ''
         },
         username: localStorage.userName || '',
-        data: []
+        data: [],
+        tooltiphidden: true
       }
     },
     watch: {
@@ -334,9 +338,17 @@
       },
       // 列表下载
       tableDownHandler () {
-        authExport(this.tOptions).then(res => {
-
-        })
+        authExport(this.tOptions)
+      },
+      // 判断是否text-overflow, 如果是就显示tooltip
+      handleCellMouseEnter (event, row) {
+        const Child = event.target.querySelector('.ellipsis')
+        if (Child.scrollHeight > Child.offsetHeight) {
+          this.tooltiphidden = false
+        }
+      },
+      formatCellHandler (row, column, cellValue) {
+        return cellValue || '-'
       }
     },
     mounted () {
@@ -367,23 +379,19 @@
 
   .line { position: relative; right: -5px; }
 
-  .demo-table-expand {
-    font-size: 0;
-  }
+  .demo-table-expand { font-size: 0; }
 
-  .demo-table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
-  }
+  .demo-table-expand .el-form-item { margin-right: 0; margin-bottom: 0; width: 50%; }
+
+  .ellipsis { width: 100%; word-break: break-all; overflow: hidden; box-sizing: border-box; text-overflow: ellipsis; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
 
 </style>
 <style>
   .el-table__body-wrapper { overflow-y: hidden; }
 
-  .demo-table-expand label {
-    width: 100px;
-    color: #99a9bf;
-  }
-  .el-dialog__body { padding: 15px 20px 0;}
+  .demo-table-expand label { width: 100px; color: #99a9bf; }
+
+  .el-dialog__body { padding: 15px 20px 0; }
+
+  .ellipsis-box .el-form-item__content { width: calc(100% - 100px); }
 </style>

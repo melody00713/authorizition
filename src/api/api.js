@@ -8,6 +8,7 @@ import router from '../router'
 import {Message} from 'element-ui'
 
 let base = '/webadmin'
+// base = '/dev'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 // http request 拦截器
@@ -97,6 +98,11 @@ export const authDelete = params => {
 // 授权准备
 export const willAudit = params => {
   return axios.get(`${base}/auth/update`, {params: params})
+}
+
+// 获取授权激活码
+export const getAuthCode = _ => {
+  return axios.post(`${base}/auth/getAuthCode`)
 }
 
 // 授权

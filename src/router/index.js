@@ -10,6 +10,11 @@ export default new Router({
   base: '/webadmin/',
   routes: [
     {
+      path: '/index.html',
+      hidden: true,
+      redirect: '/login'
+    },
+    {
       path: '/',
       name: 'Home',
       component: Home

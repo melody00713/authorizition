@@ -14,11 +14,11 @@
           value-format="yyyy-MM-dd">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="序列号：" prop="seriNumber">
-        <el-input v-model="addForm.seriNumber"></el-input>
-      </el-form-item>
       <el-form-item label="服务号：" prop="serverNumber">
         <el-input v-model="addForm.serverNumber"></el-input>
+      </el-form-item>
+      <el-form-item label="序列号：" prop="seriNumber">
+        <el-input v-model="addForm.seriNumber"></el-input>
       </el-form-item>
       <el-form-item label="授权激活码：" prop="authorizationcode">
         <el-input type="textarea" v-model="addForm.authorizationcode" resize="none" :rows="4"></el-input>
@@ -31,7 +31,7 @@
   </el-dialog>
 </template>
 <script>
-  import { willAudit, didAudit } from '../../api/api'
+  import { willAudit, didAudit, getAuthCode } from '../../api/api'
   export default {
     data () {
       var handleValidateCode = (rule, value, callback) => {
@@ -40,14 +40,19 @@
           callback(new Error(`请输入${name}`))
         } else if (!/^[0-9a-zA-Z_-]+$/.test(value)) {
           callback(new Error(`${name}必须为数字、字母、下划线或连接符`))
-        } else if (value.length > 50) {
-          callback(new Error(`${name}不能超过50个字符`))
+        } else if (value.length > (rule.field === 'authorizationcode' ? 1024 : 50)) {
+          callback(new Error(`${name}不能超过${(rule.field === 'authorizationcode' ? 1024 : 50)}个字符`))
         } else {
+          if (rule.field === 'seriNumber') {
+            value !== this.seriNumber && this.getAuthorCodeHandler()
+            this.seriNumber = value
+          }
           callback()
         }
       }
       return {
         flag: false,
+        seriNumber: '',
         addForm: {
           id: '',
           date: '',
@@ -77,6 +82,7 @@
           for(let k in this.addForm) {
             this.addForm[k] = res[k]
           }
+          this.seriNumber = res.seriNumber
           this.flag = true
         })
       },
@@ -99,6 +105,11 @@
               this.closeHandler()
             })
           }
+        })
+      },
+      getAuthorCodeHandler () {
+        getAuthCode().then(res => {
+          this.addForm.authorizationcode = res
         })
       }
     }
