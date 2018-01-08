@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/dev': {
-        target: 'http://10.10.104.31:8080/',
+        target: 'http://10.10.104.3:8080/',
         changeOrigin: true,
         pathRewrite: {
           '^/dev': '/webadmin'

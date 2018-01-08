@@ -3,3 +3,5 @@ body {font-size: 14px; }
 .el-button--danger { background-color: #e12330; border-color: #e12330; }
 
 .el-button--danger:focus, .el-button--danger:hover { background-color: #c51b26; border-color: #c51b26; }
+
+.el-table-filter {max-height: 400px; overflow-y: auto;}

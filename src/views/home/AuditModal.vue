@@ -15,7 +15,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="服务号：" prop="serverNumber">
-        <el-input v-model="addForm.serverNumber"></el-input>
+        <el-input v-model.number="addForm.serverNumber"></el-input>
       </el-form-item>
       <el-form-item label="序列号：" prop="seriNumber">
         <el-input v-model="addForm.seriNumber"></el-input>
@@ -35,7 +35,7 @@
   export default {
     data () {
       var handleValidateCode = (rule, value, callback) => {
-        let name = rule.field === 'authorizationcode' ? '授权激活码' : (rule.field === 'seriNumber' ? '序列号' : '服务号')
+        let name = rule.field === 'authorizationcode' ? '授权激活码' : '序列号'
         if (value === '') {
           callback(new Error(`请输入${name}`))
         } else if (!/^[0-9a-zA-Z_-]+$/.test(value)) {
@@ -68,7 +68,8 @@
             {required: true, validator: handleValidateCode, trigger: 'blur'}
           ],
           serverNumber: [
-            {required: true, validator: handleValidateCode, trigger: 'blur'}
+            {required: true, message: '请输入服务号', trigger: 'blur'},
+            {type: 'number', message: '服务号必须为数字值'}
           ],
           seriNumber: [
             {required: true, validator: handleValidateCode, trigger: 'blur'}
@@ -80,7 +81,7 @@
       show (id) {
         willAudit({id: id}).then(res => {
           for(let k in this.addForm) {
-            this.addForm[k] = res[k]
+            this.addForm[k] = k === 'serverNumber' ? parseInt(res[k]) : res[k]
           }
           this.seriNumber = res.seriNumber
           this.flag = true

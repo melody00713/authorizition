@@ -3,6 +3,7 @@
     <img src="../assets/images/Login_Bg.png" class="login-bgImg">
     <el-form :model="loginForm" :rules="loginFormRules" ref="loginForm" label-position="left"
              class="login-container" @keyup.enter.native.prevent="loginHandler">
+      <img src="../assets/images/logo.png" class="login-container-img">
       <p class="login-title">授权管理平台</p>
       <el-form-item prop="username">
         <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="账号"></el-input>
@@ -88,8 +89,9 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    margin-top: -168px;
+    margin-top: -198px;
     margin-left: -175px;
+    text-align: center;
   }
 
   .login-container .title {

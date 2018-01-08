@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="申请授权"
+    title="编辑授权"
     :visible.sync="flag"
     width="600px"
     :before-close="closeHandler">
@@ -11,27 +11,6 @@
       <el-form-item label="客户名称：" prop="name">
         <el-input v-model="addForm.name"></el-input>
       </el-form-item>
-      <!--<el-form-item label="产品线：" prop="productLine">-->
-        <!--<el-select v-model="addForm.productLine" placeholder="请选择" @change="changeHandler">-->
-          <!--<el-option-->
-            <!--v-for="item in filter.product_line"-->
-            <!--:key="item.id"-->
-            <!--:label="item.value"-->
-            <!--:value="item.id">-->
-          <!--</el-option>-->
-        <!--</el-select>-->
-      <!--</el-form-item>-->
-      <!--<el-form-item label="产品名称：" prop="product">-->
-        <!--<el-select v-model="addForm.product" placeholder="请选择">-->
-          <!--<el-option-->
-            <!--v-for="item in filter.product"-->
-            <!--v-if="!addForm.productLine || item.parentId === addForm.productLine"-->
-            <!--:key="item.id"-->
-            <!--:label="item.value"-->
-            <!--:value="item.value">-->
-          <!--</el-option>-->
-        <!--</el-select>-->
-      <!--</el-form-item>-->
       <el-form-item label="产品名称：" prop="productSeries">
         <el-select v-model="addForm.productSeries" placeholder="请选择">
           <el-option
@@ -76,7 +55,7 @@
   </el-dialog>
 </template>
 <script>
-  import { authAdd } from '../../api/api'
+  import { detail, authEdit } from '../../api/api'
   export default {
     props: ['filter'],
     data () {
@@ -94,15 +73,15 @@
       return {
         flag: false,
         addForm: {
+          id: '',
           contractNumber: '',
           name: '',
-//          productLine: '',
-//          product: '',
           productSeries: '',
           version: '',
           productModule: '',
           superveneNumber: '',
-          license: ''
+          license: '',
+          status: ''
         },
         addFormRules: {
           contractNumber: [
@@ -112,12 +91,6 @@
             {required: true, message: '请输入客户名称', trigger: 'blur'},
             {max: 50, message: '客户名称不能超过50个字符', trigger: 'blur'}
           ],
-//          productLine: [
-//            {required: true, message: '请选择产品线', trigger: 'change'}
-//          ],
-//          product: [
-//            {required: true, message: '请选择产品名称', trigger: 'change'}
-//          ],
           productSeries: [
             {required: true, message: '请选择产品名称', trigger: 'change'}
           ],
@@ -139,37 +112,33 @@
       }
     },
     methods: {
-      show () {
-        this.flag = true
+      show (id) {
+        detail(id).then(res => {
+          for(let k in this.addForm) {
+            this.addForm[k] = k === 'superveneNumber' ? parseInt(res[k]) : res[k]
+          }
+          this.flag = true
+        })
       },
       closeHandler () {
         this.$refs.addForm.resetFields()
         this.addForm = {
+          id: '',
           contractNumber: '',
           name: '',
-//          productLine: '',
-//          product: '',
           productSeries: '',
           version: '',
           productModule: '',
           superveneNumber: '',
-          license: ''
+          license: '',
+          status: ''
         }
         this.flag = false
-      },
-      changeHandler () {
-//        this.addForm.product = ''
-        this.addForm.productSeries = ''
       },
       submitHandler () {
         this.$refs.addForm.validate((valid) => {
           if (valid) {
-//            this.filter.product_line.forEach(item => {
-//              if (item.id === this.addForm.productLine) {
-//                this.addForm.productLine = item.value
-//              }
-//            })
-            authAdd(this.addForm).then(res => {
+            authEdit(this.addForm).then(res => {
               this.$emit('success')
               this.closeHandler()
             })

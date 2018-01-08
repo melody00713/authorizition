@@ -78,13 +78,13 @@
               <el-form-item label="客户名称">
                 <span>{{ props.row.name || '-' }}</span>
               </el-form-item>
-              <el-form-item label="产品线">
-                <span>{{ props.row.productLine || '-' }}</span>
-              </el-form-item>
+              <!--<el-form-item label="产品线">-->
+                <!--<span>{{ props.row.productLine || '-' }}</span>-->
+              <!--</el-form-item>-->
+              <!--<el-form-item label="产品名称">-->
+                <!--<span>{{ props.row.product || '-' }}</span>-->
+              <!--</el-form-item>-->
               <el-form-item label="产品名称">
-                <span>{{ props.row.product || '-' }}</span>
-              </el-form-item>
-              <el-form-item label="产品系列">
                 <span>{{ props.row.productSeries || '-' }}</span>
               </el-form-item>
               <el-form-item label="产品版本">
@@ -124,12 +124,12 @@
         </el-table-column>
         <el-table-column prop="contractNumber" label="合同编号" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
         <el-table-column prop="name" label="客户名称" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
-        <el-table-column filter-placement="bottom" column-key="productLine" prop="productLine" label="产品线"
-                         show-overflow-tooltip :filters="filter.product_line"
-                         :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>
-        <el-table-column filter-placement="bottom" column-key="product" prop="product" label="产品名称"
-                         show-overflow-tooltip :filters="filter.product" :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>
-        <el-table-column filter-placement="bottom" column-key="productSeries" prop="productSeries" label="产品系列"
+        <!--<el-table-column filter-placement="bottom" column-key="productLine" prop="productLine" label="产品线"-->
+                         <!--show-overflow-tooltip :filters="filter.product_line"-->
+                         <!--:filter-multiple="false" :formatter="formatCellHandler"></el-table-column>-->
+        <!--<el-table-column filter-placement="bottom" column-key="product" prop="product" label="产品名称"-->
+                         <!--show-overflow-tooltip :filters="filter.product" :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>-->
+        <el-table-column filter-placement="bottom" column-key="productSeries" prop="productSeries" label="产品名称"
                          show-overflow-tooltip :filters="filter.product_series"
                          :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>
         <el-table-column filter-placement="bottom" column-key="version" prop="version" label="产品版本"
@@ -145,16 +145,17 @@
                          :filters="filter.audit_status" :filter-multiple="false"></el-table-column>
         <el-table-column
           label="操作"
-          v-if="auditor">
+          :width="auditor && 250">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.status === '审核中'"
-                       size="mini" type="danger" @click="showModalHandler('auditModal', scope.row.id)">审核
+            <el-button v-if="auditor && scope.row.status === '审核中'"
+                       size="mini" type="success" @click="showModalHandler('auditModal', scope.row.id)">审核
             </el-button>
-            <el-button v-else
+            <el-button v-else-if="auditor && scope.row.status !== '审核中'"
                        size="mini" @click="downloadHandler(scope.row.id)">下载
             </el-button>
-            <el-button v-if="false"
-                       size="mini" @click="deleteHandler(scope.row.id)">删除
+            <el-button size="mini" type="primary" @click="showModalHandler('editModal', scope.row.id)">编辑
+            </el-button>
+            <el-button v-if="auditor || scope.row.status === '审核中'" size="mini" type="danger" @click="deleteHandler(scope.row.id)">删除
             </el-button>
           </template>
         </el-table-column>
@@ -172,6 +173,8 @@
     <auditModal ref="auditModal" @success="addSuccessHandler"/>
     <!-- 修改密码modal -->
     <updatePwdModal ref="updatePwdModal" :username="username"/>
+    <!-- 修改授权modal -->
+    <editModal ref="editModal" :filter="addFilter" @success="addSuccessHandler"/>
   </el-container>
 </template>
 <script>
@@ -179,6 +182,7 @@
   import addForm from './AddModal.vue'
   import auditModal from './AuditModal.vue'
   import updatePwdModal from './UpdatePwdModal.vue'
+  import editModal from './editModal.vue'
 
   var pageSize = Math.floor((document.documentElement.clientHeight - 280) / 50) > 0 ? Math.floor((document.documentElement.clientHeight - 280) / 50) : 0
   export default {
@@ -254,7 +258,8 @@
     components: {
       addForm,
       auditModal,
-      updatePwdModal
+      updatePwdModal,
+      editModal
     },
     methods: {
       // 获取列表
@@ -394,4 +399,10 @@
   .el-dialog__body { padding: 15px 20px 0; }
 
   .ellipsis-box .el-form-item__content { width: calc(100% - 100px); }
+
+  :global {
+    .el-table-filter {
+      max-height: 200px;
+    }
+  }
 </style>

@@ -115,12 +115,21 @@ export const authDown = params => {
   return `${base}/auth/${params}/txt`
 }
 
+// 授权详情
+export const detail = params => {
+  return axios.post(`${base}/auth/${params}`)
+}
+
+// 修改授权
+export const authEdit = params => {
+  return axios.post(`${base}/auth/update`, params)
+}
+
 // 列表下载
 export const authExport = params => {
   return axios.post(`${base}/auth/export`, params, {
     responseType: 'blob'
   }).then(res => {
-    console.log(res)
     if (res.data) {
       let blob = res.data
       let a = document.createElement('a')
