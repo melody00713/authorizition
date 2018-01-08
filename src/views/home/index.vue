@@ -400,9 +400,4 @@
 
   .ellipsis-box .el-form-item__content { width: calc(100% - 100px); }
 
-  :global {
-    .el-table-filter {
-      max-height: 200px;
-    }
-  }
 </style>
