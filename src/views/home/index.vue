@@ -108,9 +108,6 @@
               <el-form-item label="序列号">
                 <span>{{ props.row.seriNumber || '-' }}</span>
               </el-form-item>
-              <el-form-item label="服务号">
-                <span>{{ props.row.serverNumber || '-' }}</span>
-              </el-form-item>
               <el-form-item label="授权激活码" class="ellipsis-box">
                 <div @mouseenter="($event) => handleCellMouseEnter($event)" @mouseleave="tooltiphidden = true">
                 <el-tooltip ref="tootip" :disabled="tooltiphidden" class="item" effect="dark" content="下载查看全部" placement="top">
@@ -124,11 +121,6 @@
         </el-table-column>
         <el-table-column prop="contractNumber" label="合同编号" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
         <el-table-column prop="name" label="客户名称" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
-        <!--<el-table-column filter-placement="bottom" column-key="productLine" prop="productLine" label="产品线"-->
-                         <!--show-overflow-tooltip :filters="filter.product_line"-->
-                         <!--:filter-multiple="false" :formatter="formatCellHandler"></el-table-column>-->
-        <!--<el-table-column filter-placement="bottom" column-key="product" prop="product" label="产品名称"-->
-                         <!--show-overflow-tooltip :filters="filter.product" :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>-->
         <el-table-column filter-placement="bottom" column-key="productSeries" prop="productSeries" label="产品名称"
                          show-overflow-tooltip :filters="filter.product_series"
                          :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>
@@ -145,7 +137,7 @@
                          :filters="filter.audit_status" :filter-multiple="false"></el-table-column>
         <el-table-column
           label="操作"
-          :width="auditor && 250">
+          :width="auditor ? 250 : 150">
           <template slot-scope="scope">
             <el-button v-if="auditor && scope.row.status === '审核中'"
                        size="mini" type="success" @click="showModalHandler('auditModal', scope.row.id)">审核
@@ -153,10 +145,11 @@
             <el-button v-else-if="auditor && scope.row.status !== '审核中'"
                        size="mini" @click="downloadHandler(scope.row.id)">下载
             </el-button>
-            <el-button size="mini" type="primary" @click="showModalHandler('editModal', scope.row.id)">编辑
+            <el-button v-if="auditor || scope.row.status === '审核中'" size="mini" type="primary" @click="showModalHandler('editModal', scope.row.id)">编辑
             </el-button>
             <el-button v-if="auditor || scope.row.status === '审核中'" size="mini" type="danger" @click="deleteHandler(scope.row.id)">删除
             </el-button>
+            <span v-if="!auditor && scope.row.status !== '审核中'">-</span>
           </template>
         </el-table-column>
       </el-table>

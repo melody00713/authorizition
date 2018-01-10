@@ -14,9 +14,6 @@
           value-format="yyyy-MM-dd">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="服务号：" prop="serverNumber">
-        <el-input v-model.number="addForm.serverNumber"></el-input>
-      </el-form-item>
       <el-form-item label="序列号：" prop="seriNumber">
         <el-input v-model="addForm.seriNumber"></el-input>
       </el-form-item>
@@ -57,7 +54,6 @@
           id: '',
           date: '',
           authorizationcode: '',
-          serverNumber: '',
           seriNumber: ''
         },
         addFormRules: {
@@ -66,10 +62,6 @@
           ],
           authorizationcode: [
             {required: true, validator: handleValidateCode, trigger: 'blur'}
-          ],
-          serverNumber: [
-            {required: true, message: '请输入服务号', trigger: 'blur'},
-            {type: 'number', message: '服务号必须为数字值'}
           ],
           seriNumber: [
             {required: true, validator: handleValidateCode, trigger: 'blur'}
@@ -93,7 +85,6 @@
           id: '',
           date: '',
           authorizationcode: '',
-          serverNumber: '',
           seriNumber: ''
         }
         this.flag = false
