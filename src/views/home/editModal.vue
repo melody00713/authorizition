@@ -148,6 +148,7 @@
         this.$refs.addForm.validate((valid) => {
           if (valid) {
             authEdit(this.addForm).then(res => {
+              this.$message.success('编辑授权成功')
               this.$emit('success')
               this.closeHandler()
             })

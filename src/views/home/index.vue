@@ -260,8 +260,10 @@
     },
     methods: {
       // 获取列表
-      getListHandler () {
-        this.table_loading = true
+      getListHandler (noLoading) {
+        if(!noLoading) {
+          this.table_loading = true
+        }
         authList(this.tOptions).then(res => {
           this.table_loading = false
           this.total = res.count
@@ -322,13 +324,14 @@
         }
       },
       // 组件操作成功回调
-      addSuccessHandler () {
-        this.getListHandler()
+      addSuccessHandler (noLoading) {
+        this.getListHandler(noLoading)
       },
       // 删除
       deleteHandler (id) {
         this.$confirm('确认删除授权吗?', '删除授权', {}).then(() => {
           authDelete({id: id}).then(res => {
+            this.$message.success('删除授权成功')
             this.getListHandler()
           })
         })

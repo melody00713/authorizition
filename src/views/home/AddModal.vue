@@ -74,14 +74,15 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button size="medium" @click="closeHandler">取 消</el-button>
-      <el-button size="medium" type="primary" @click="submitHandler">确 定</el-button>
+      <el-button size="medium" type="success" @click="submitHandler(false)">保存并关闭</el-button>
+      <el-button size="medium" type="primary" @click="submitHandler(true)">保存并继续</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
   import { authAdd } from '../../api/api'
   export default {
-    props: ['filter'],
+    props: ['filter', 'loading'],
     data () {
       var handleValidateContractNumber = (rule, value, callback) => {
         if (value === '') {
@@ -170,7 +171,7 @@
 //        this.addForm.product = ''
         this.addForm.productSeries = ''
       },
-      submitHandler () {
+      submitHandler (noLoading) {
         this.$refs.addForm.validate((valid) => {
           if (valid) {
 //            this.filter.product_line.forEach(item => {
@@ -179,8 +180,11 @@
 //              }
 //            })
             authAdd(this.addForm).then(res => {
-              this.$emit('success')
-              this.closeHandler()
+              this.$message.success('申请授权成功')
+              this.$emit('success', noLoading)
+              if (!noLoading) {
+                this.closeHandler()
+              }
             })
           }
         })

@@ -77,10 +77,7 @@
               oldPwd: this.modifyForm.oldPwd,
               newPwd: this.modifyForm.newPwd
             }).then(res => {
-              this.$message({
-                type: 'success',
-                message: '成功修改密码'
-              })
+              this.$message.success('修改密码成功')
               this.$router.push('/login')
             })
           } else {

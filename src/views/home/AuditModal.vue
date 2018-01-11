@@ -93,6 +93,7 @@
         this.$refs.addForm.validate((valid) => {
           if (valid) {
             didAudit(this.addForm).then(res => {
+              this.$message.success('授权成功')
               this.$emit('success')
               this.closeHandler()
             })
