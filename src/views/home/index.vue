@@ -93,11 +93,14 @@
               <el-form-item label="产品组件">
                 <span>{{ props.row.productModule || '-' }}</span>
               </el-form-item>
-              <el-form-item label="数量">
+              <el-form-item label="合同数量">
                 <span>{{ props.row.superveneNumber || '-' }}</span>
               </el-form-item>
               <el-form-item label="许可">
                 <span>{{ props.row.license || '-' }}</span>
+              </el-form-item>
+              <el-form-item label="申请数量">
+                <span>{{ props.row.applyNumber || '-' }}</span>
               </el-form-item>
               <el-form-item label="授权日期">
                 <span>{{ props.row.date || '-' }}</span>
@@ -105,7 +108,7 @@
               <el-form-item label="状态">
                 <span>{{ props.row.status || '-' }}</span>
               </el-form-item>
-              <el-form-item label="序列号">
+              <el-form-item label="安装识别码">
                 <span>{{ props.row.seriNumber || '-' }}</span>
               </el-form-item>
               <el-form-item label="授权激活码" class="ellipsis-box">
@@ -130,8 +133,9 @@
         <el-table-column filter-placement="bottom" column-key="productModule" prop="productModule" label="产品组件"
                          show-overflow-tooltip :filters="filter.product_model"
                          :filter-multiple="false" :formatter="formatCellHandler"></el-table-column>
-        <el-table-column prop="superveneNumber" label="数量" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
+        <el-table-column prop="superveneNumber" label="合同数量" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
         <el-table-column prop="license" label="许可" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
+        <el-table-column prop="applyNumber" label="申请数量" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
         <el-table-column prop="date" label="授权日期" show-overflow-tooltip :formatter="formatCellHandler"></el-table-column>
         <el-table-column filter-placement="bottom" column-key="status" prop="status" label="状态" show-overflow-tooltip
                          :filters="filter.audit_status" :filter-multiple="false"></el-table-column>

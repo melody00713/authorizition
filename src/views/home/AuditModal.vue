@@ -14,7 +14,7 @@
           value-format="yyyy-MM-dd">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="序列号：" prop="seriNumber">
+      <el-form-item label="安装识别码：" prop="seriNumber">
         <el-input v-model="addForm.seriNumber"></el-input>
       </el-form-item>
       <el-form-item label="授权激活码：" prop="authorizationcode">
@@ -32,7 +32,7 @@
   export default {
     data () {
       var handleValidateCode = (rule, value, callback) => {
-        let name = rule.field === 'authorizationcode' ? '授权激活码' : '序列号'
+        let name = rule.field === 'authorizationcode' ? '授权激活码' : '安装识别码'
         if (value === '') {
           callback(new Error(`请输入${name}`))
         } else if (!/^[0-9a-zA-Z_-]+$/.test(value)) {

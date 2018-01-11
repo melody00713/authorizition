@@ -41,8 +41,11 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="数量：" prop="superveneNumber">
+      <el-form-item label="合同数量：" prop="superveneNumber">
         <el-input v-model.number="addForm.superveneNumber"></el-input>
+      </el-form-item>
+      <el-form-item label="申请数量：" prop="applyNumber">
+        <el-input v-model.number="addForm.applyNumber"></el-input>
       </el-form-item>
       <el-form-item label="许可：" prop="license">
         <el-input v-model="addForm.license"></el-input>
@@ -80,6 +83,7 @@
           version: '',
           productModule: '',
           superveneNumber: '',
+          applyNumber: '',
           license: '',
           status: ''
         },
@@ -101,8 +105,12 @@
             {required: true, message: '请选择产品组件', trigger: 'change'}
           ],
           superveneNumber: [
-            {required: true, message: '请输入产品数量', trigger: 'blur'},
-            {type: 'number', message: '产品数量必须为数字值'}
+            {required: true, message: '请输入合同数量', trigger: 'blur'},
+            {type: 'number', message: '合同数量必须为数字值'}
+          ],
+          applyNumber: [
+            {required: true, message: '请输入申请数量', trigger: 'blur'},
+            {type: 'number', message: '申请数量必须为数字值'}
           ],
           license: [
             {required: true, message: '请输入产品许可', trigger: 'blur'},
@@ -115,7 +123,7 @@
       show (id) {
         detail(id).then(res => {
           for(let k in this.addForm) {
-            this.addForm[k] = k === 'superveneNumber' ? parseInt(res[k]) : res[k]
+            this.addForm[k] = (k === 'superveneNumber' || k === 'applyNumber') ? parseInt(res[k]) : res[k]
           }
           this.flag = true
         })
@@ -130,6 +138,7 @@
           version: '',
           productModule: '',
           superveneNumber: '',
+          applyNumber: '',
           license: '',
           status: ''
         }
